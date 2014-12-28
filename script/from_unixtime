@@ -1,0 +1,38 @@
+#!perl
+use strict;
+use warnings;
+use App::FromUnixtime;
+
+App::FromUnixtime->run(@ARGV);
+
+__END__
+
+=head1 NAME
+
+from_unixtime - to convert from unixtime to date suitably
+
+=head1 SYNOPSIS
+
+    $ cat sql_result | from_unixtime
+    id    1
+    created_at    1419702037(2014/12/28 02:40:37)
+    updated_at    1419702037(2014/12/28 02:40:37)
+
+=head2 OPTIONS
+
+    -f   --format       date format as POSIX::strftime
+
+=head1 AUTHOR
+
+Dai Okabayashi E<lt>bayashi@cpan.orgE<gt>
+
+=head1 SEE ALSO
+
+L<App::FromUnixtime>
+
+=head1 LICENSE
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+=cut
