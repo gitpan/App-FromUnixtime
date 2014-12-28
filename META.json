@@ -16,8 +16,8 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Test::More" : "0.88",
-            "Test::Output" : "0"
+            "Capture::Tiny" : "0",
+            "Test::More" : "0.88"
          }
       },
       "configure" : {
@@ -39,7 +39,7 @@
    "provides" : {
       "App::FromUnixtime" : {
          "file" : "lib/App/FromUnixtime.pm",
-         "version" : "0.01"
+         "version" : "0.02"
       }
    },
    "release_status" : "stable",
@@ -54,5 +54,5 @@
          "url" : "http://github.com/bayashi/App-FromUnixtime"
       }
    },
-   "version" : "0.01"
+   "version" : "0.02"
 }

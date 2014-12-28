@@ -3,14 +3,16 @@ use strict;
 use warnings;
 use Getopt::Long qw/GetOptionsFromArray/;
 use POSIX qw/strftime/;
+use Config::CmdRC qw/.from_unixtimerc/;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 our $MAYBE_UNIXTIME = join '|', (
     'created_(?:at|on)',
     'updated_(?:at|on)',
     'date',
     'unixtime',
+    '_time',
 );
 
 our $DEFAULT_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S %z';
@@ -45,7 +47,18 @@ sub _from_unixtime {
     }
 
     my $date = eval { strftime($config->{format}, localtime($maybe_unixtime)) };
-    return $@ ? $maybe_unixtime : "$maybe_unixtime($date)";
+    if ($@) {
+        return $maybe_unixtime;
+    }
+    else {
+        return sprintf(
+            "%s%s%s%s",
+            $maybe_unixtime,
+            $config->{'start-bracket'},
+            $date,
+            $config->{'end-bracket'},
+        );
+    }
 }
 
 sub _merge_opt {
@@ -53,17 +66,21 @@ sub _merge_opt {
 
     GetOptionsFromArray(
         \@argv,
-        'f|format=s'    => \$config->{format},
-        'h|help'        => sub {
+        'f|format=s'      => \$config->{format},
+        'start-bracket=s' => \$config->{'start-bracket'},
+        'end-bracket=s'   => \$config->{'end-bracket'},
+        'h|help' => sub {
             _show_usage(1);
         },
-        'v|version'   => sub {
+        'v|version' => sub {
             print "$0 $VERSION\n";
             exit 1;
         },
     ) or _show_usage(2);
 
-    $config->{format} ||= $DEFAULT_DATE_FORMAT;
+    $config->{format} ||= RC->{format} || $DEFAULT_DATE_FORMAT;
+    $config->{'start-bracket'} ||= RC->{'start-bracket'} || '(';
+    $config->{'end-bracket'}   ||= RC->{'end-bracket'}   || ')';
 }
 
 sub _show_usage {

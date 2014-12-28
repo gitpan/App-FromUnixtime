@@ -1,4 +1,10 @@
 Revision history for Perl extension App::FromUnixtime
 
+0.02    Sun Dec 28 19:16:11 JST 2014
+        - use custom configuration file: .from_unixtimerc
+        - add new options: --start-bracket, --end-bracket
+        - add regexp pattarn for column: '_time'
+        - enhanced tests
+
 0.01    Sun Dec 28 12:13:57 JST 2014
         - original version

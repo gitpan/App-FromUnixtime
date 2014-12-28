@@ -20,7 +20,10 @@ from_unixtime - to convert from unixtime to date suitably
 
 =head2 OPTIONS
 
-    -f   --format       date format as POSIX::strftime
+    -f   --format       date format // '%a, %d %b %Y %H:%M:%S %z'
+
+    --start-bracket     change start bracket // '('
+    --end-bracket       change end bracket // ')'
 
 =head1 AUTHOR
 

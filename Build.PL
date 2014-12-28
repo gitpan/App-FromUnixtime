@@ -13,7 +13,7 @@ my $builder = Module::Build->new(
     },
     build_requires      => {
         'Test::More' => 0.88,
-        'Test::Output' => 0,
+        'Capture::Tiny' => 0,
     },
     requires => {
         'perl' => '5.008001',
