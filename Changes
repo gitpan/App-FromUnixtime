@@ -1,5 +1,8 @@
 Revision history for Perl extension App::FromUnixtime
 
+0.03    Sun Dec 28 21:16:57 JST 2014
+        - fix dependency
+
 0.02    Sun Dec 28 19:16:11 JST 2014
         - use custom configuration file: .from_unixtimerc
         - add new options: --start-bracket, --end-bracket
