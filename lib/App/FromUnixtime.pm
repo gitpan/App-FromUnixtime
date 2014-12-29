@@ -5,7 +5,7 @@ use Getopt::Long qw/GetOptionsFromArray/;
 use POSIX qw/strftime/;
 use Config::CmdRC qw/.from_unixtimerc/;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 our $MAYBE_UNIXTIME = join '|', (
     'created_(?:at|on)',

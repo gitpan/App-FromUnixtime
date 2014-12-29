@@ -23,7 +23,9 @@ from_unixtime - to convert from unixtime to date suitably
     -f   --format       date format // '%a, %d %b %Y %H:%M:%S %z'
 
     --start-bracket     change start bracket // '('
-    --end-bracket       change end bracket // ')'
+    --end-bracket       change end bracket   // ')'
+
+    --re                additional column condition
 
 =head1 AUTHOR
 
