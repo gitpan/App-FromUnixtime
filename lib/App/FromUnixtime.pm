@@ -5,7 +5,7 @@ use Getopt::Long qw/GetOptionsFromArray/;
 use POSIX qw/strftime/;
 use Config::CmdRC qw/.from_unixtimerc/;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 our $MAYBE_UNIXTIME = join '|', (
     'created_(?:at|on)',
@@ -32,7 +32,8 @@ sub _main {
 
     while ( my $line = <STDIN> ) {
         chomp $line;
-        if ($line =~ m!(?:$MAYBE_UNIXTIME)!) {
+        if ($line =~ m!(?:$MAYBE_UNIXTIME)!
+                || ($config->{_re} && $line =~ m!(?:$config->{_re})!) ) {
             $line =~ s/(\d+)/&_from_unixtime($1, $config)/eg;
         }
         print "$line\n";
@@ -64,11 +65,19 @@ sub _from_unixtime {
 sub _merge_opt {
     my ($config, @argv) = @_;
 
+    _get_options($config, @argv);
+    _validate_options($config);
+}
+
+sub _get_options {
+    my ($config, @argv) = @_;
+
     GetOptionsFromArray(
         \@argv,
         'f|format=s'      => \$config->{format},
         'start-bracket=s' => \$config->{'start-bracket'},
         'end-bracket=s'   => \$config->{'end-bracket'},
+        're=s@'           => \$config->{re},
         'h|help' => sub {
             _show_usage(1);
         },
@@ -77,10 +86,23 @@ sub _merge_opt {
             exit 1;
         },
     ) or _show_usage(2);
+}
+
+sub _validate_options {
+    my ($config) = @_;
 
     $config->{format} ||= RC->{format} || $DEFAULT_DATE_FORMAT;
     $config->{'start-bracket'} ||= RC->{'start-bracket'} || '(';
     $config->{'end-bracket'}   ||= RC->{'end-bracket'}   || ')';
+    if (ref RC->{re} eq 'ARRAY') {
+        push @{$config->{re}}, @{RC->{re}};
+    }
+    elsif (RC->{re}) {
+        push @{$config->{re}}, RC->{re};
+    }
+    if ($config->{re}) {
+        $config->{_re} = join '|', map { quotemeta $_;  } @{$config->{re}};
+    }
 }
 
 sub _show_usage {
