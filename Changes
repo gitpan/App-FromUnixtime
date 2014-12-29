@@ -1,5 +1,8 @@
 Revision history for Perl extension App::FromUnixtime
 
+0.06    Mon Dec 29 21:21:59 JST 2014
+        - enhance POD
+
 0.05    Mon Dec 29 16:17:03 JST 2014
         - add pod for --re option
 
