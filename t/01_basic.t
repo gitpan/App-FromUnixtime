@@ -83,4 +83,17 @@ _INPUT_
     like $stdout, qr/value\s+1419692400\(.+\)/;
 }
 
+{
+    open my $IN, '<', \<<'_INPUT_';
+1419692400
+_INPUT_
+    local *STDIN = *$IN;
+    my ($stdout, $strerr) = capture {
+        App::FromUnixtime->run;
+    };
+    close $IN;
+    note $stdout if $ENV{AUTHOR_TEST};
+    like $stdout, qr/1419692400\(.+\)/;
+}
+
 done_testing;
