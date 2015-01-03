@@ -6,7 +6,7 @@ use IO::Interactive::Tiny;
 use POSIX qw/strftime/;
 use Config::CmdRC qw/.from_unixtimerc/;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 our $MAYBE_UNIXTIME = join '|', (
     'created_(?:at|on)',

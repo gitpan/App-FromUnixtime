@@ -96,4 +96,40 @@ _INPUT_
     like $stdout, qr/1419692400\(.+\)/;
 }
 
+{
+    no warnings 'redefine';
+    *App::FromUnixtime::RC = sub { +{ re => 'value'} };
+    open my $IN, '<', \<<'_INPUT_';
+id          1
+name        John
+value       1419692400
+_INPUT_
+    local *STDIN = *$IN;
+    my ($stdout, $strerr) = capture {
+        App::FromUnixtime->run;
+    };
+    close $IN;
+    note $stdout if $ENV{AUTHOR_TEST};
+    like $stdout, qr/value\s+1419692400\(.+\)/;
+    *App::FromUnixtime::RC = sub { +{} };
+}
+
+{
+    no warnings 'redefine';
+    *App::FromUnixtime::RC = sub { +{ re => ['foobar', 'value'] } };
+    open my $IN, '<', \<<'_INPUT_';
+id          1
+name        John
+value       1419692400
+_INPUT_
+    local *STDIN = *$IN;
+    my ($stdout, $strerr) = capture {
+        App::FromUnixtime->run;
+    };
+    close $IN;
+    note $stdout if $ENV{AUTHOR_TEST};
+    like $stdout, qr/value\s+1419692400\(.+\)/;
+    *App::FromUnixtime::RC = sub { +{} };
+}
+
 done_testing;

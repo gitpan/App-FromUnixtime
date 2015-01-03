@@ -41,7 +41,7 @@
    "provides" : {
       "App::FromUnixtime" : {
          "file" : "lib/App/FromUnixtime.pm",
-         "version" : "0.08"
+         "version" : "0.09"
       }
    },
    "release_status" : "stable",
@@ -56,5 +56,5 @@
          "url" : "http://github.com/bayashi/App-FromUnixtime"
       }
    },
-   "version" : "0.08"
+   "version" : "0.09"
 }

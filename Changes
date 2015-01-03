@@ -1,5 +1,8 @@
 Revision history for Perl extension App::FromUnixtime
 
+0.09    Sat Jan  3 21:38:27 JST 2015
+        - add tests
+
 0.08    Sat Jan  3 19:49:17 JST 2015
         - refactor
         - enable to replace unixtime args like `from_unixtime 1419702037`
