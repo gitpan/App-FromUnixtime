@@ -13,6 +13,18 @@ from_unixtime - to convert from unixtime to date suitably
 
 =head1 SYNOPSIS
 
+replace unixtime args
+
+    $ from_unixtime 1419702037
+    1419702037(2014/12/28 02:40:37)
+
+or filter unixtime suitably
+
+    $ cat sql_result
+    id    1
+    created_at    1419702037
+    updated_at    1419702037
+
     $ cat sql_result | from_unixtime
     id    1
     created_at    1419702037(2014/12/28 02:40:37)

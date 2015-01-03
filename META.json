@@ -28,7 +28,8 @@
       "runtime" : {
          "requires" : {
             "Config::CmdRC" : "0",
-            "Getopt::Long" : "2.42",
+            "Getopt::Long" : "0",
+            "IO::Interactive::Tiny" : "0",
             "POSIX" : "0",
             "Pod::Usage" : "0",
             "perl" : "5.008001",
@@ -40,7 +41,7 @@
    "provides" : {
       "App::FromUnixtime" : {
          "file" : "lib/App/FromUnixtime.pm",
-         "version" : "0.07"
+         "version" : "0.08"
       }
    },
    "release_status" : "stable",
@@ -55,5 +56,5 @@
          "url" : "http://github.com/bayashi/App-FromUnixtime"
       }
    },
-   "version" : "0.07"
+   "version" : "0.08"
 }

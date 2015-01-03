@@ -2,10 +2,11 @@ package App::FromUnixtime;
 use strict;
 use warnings;
 use Getopt::Long qw/GetOptionsFromArray/;
+use IO::Interactive::Tiny;
 use POSIX qw/strftime/;
 use Config::CmdRC qw/.from_unixtimerc/;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 our $MAYBE_UNIXTIME = join '|', (
     'created_(?:at|on)',
@@ -22,7 +23,7 @@ sub run {
     my @argv = @_;
 
     my $config = +{};
-    _merge_opt($config, @argv);
+    _get_options($config, \@argv);
 
     _main($config);
 }
@@ -30,15 +31,31 @@ sub run {
 sub _main {
     my $config = shift;
 
-    while ( my $line = <STDIN> ) {
-        chomp $line;
-        if ($line =~ m!(?:$MAYBE_UNIXTIME)[^\d]*(\d+)!
+    if ( ! IO::Interactive::Tiny::is_interactive(*STDIN) ) {
+        while ( my $line = <STDIN> ) {
+            chomp $line;
+            if ( my $match = _may_replace($line, $config) ) {
+                _from_unixtime($match => \$line, $config);
+            }
+            print "$line\n";
+        }
+    }
+    else {
+        for my $unixtime (@{$config->{unixtime}}) {
+            _from_unixtime($unixtime => \$unixtime, $config);
+            print "$unixtime\n";
+        }
+    }
+}
+
+sub _may_replace {
+    my ($line, $config) = @_;
+
+    if ($line =~ m!(?:$MAYBE_UNIXTIME)[^\d]*(\d+)!
                 || ($config->{_re} && $line =~ m!(?:$config->{_re})[^\d]*(\d+)!)
                 || $line =~ m!^[\s\t\r\n]*(\d+)[\s\t\r\n]*$!
-        ) {
-            _from_unixtime($1 => \$line, $config);
-        }
-        print "$line\n";
+    ) {
+        return $1;
     }
 }
 
@@ -61,18 +78,11 @@ sub _from_unixtime {
     $$line_ref =~ s/$maybe_unixtime/$replaced_unixtime/;
 }
 
-sub _merge_opt {
-    my ($config, @argv) = @_;
-
-    _get_options($config, @argv);
-    _validate_options($config);
-}
-
 sub _get_options {
-    my ($config, @argv) = @_;
+    my ($config, $argv) = @_;
 
     GetOptionsFromArray(
-        \@argv,
+        $argv,
         'f|format=s'      => \$config->{format},
         'start-bracket=s' => \$config->{'start-bracket'},
         'end-bracket=s'   => \$config->{'end-bracket'},
@@ -85,10 +95,12 @@ sub _get_options {
             exit 1;
         },
     ) or _show_usage(2);
+
+    _validate_options($config, $argv);
 }
 
 sub _validate_options {
-    my ($config) = @_;
+    my ($config, $argv) = @_;
 
     $config->{format} ||= RC->{format} || $DEFAULT_DATE_FORMAT;
     $config->{'start-bracket'} ||= RC->{'start-bracket'} || '(';
@@ -102,13 +114,14 @@ sub _validate_options {
     if ($config->{re}) {
         $config->{_re} = join '|', map { quotemeta $_;  } @{$config->{re}};
     }
+    push @{$config->{unixtime}}, @{$argv};
 }
 
 sub _show_usage {
     my $exitval = shift;
 
     require Pod::Usage;
-    Pod::Usage::pod2usage($exitval);
+    Pod::Usage::pod2usage(-exitval => $exitval);
 }
 
 1;

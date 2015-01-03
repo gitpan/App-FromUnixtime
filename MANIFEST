@@ -9,6 +9,7 @@ script/from_unixtime
 t/00_compile.t
 t/01_basic.t
 t/02_extra.t
+t/03_arg.t
 xt/01_perlcritic.t
 xt/02_pod-coverage.t
 xt/03_pod.t

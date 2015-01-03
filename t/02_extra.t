@@ -5,6 +5,10 @@ use Test::More;
 use App::FromUnixtime;
 
 {
+    ok App::FromUnixtime::_show_usage('NOEXIT');
+}
+
+{
     my $command = 'script/from_unixtime';
 
     # version
