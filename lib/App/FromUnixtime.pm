@@ -5,8 +5,10 @@ use Getopt::Long qw/GetOptionsFromArray/;
 use IO::Interactive::Tiny;
 use POSIX qw/strftime/;
 use Config::CmdRC qw/.from_unixtimerc/;
+use Exporter 'import';
+our @EXPORT = qw/from_unixtime/;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 our $MAYBE_UNIXTIME = join '|', (
     'created_(?:at|on)',
@@ -35,14 +37,16 @@ sub _main {
         while ( my $line = <STDIN> ) {
             chomp $line;
             if ( my $match = _may_replace($line, $config) ) {
-                _from_unixtime($match => \$line, $config);
+                if ( ! _may_not_replace($line, $config) ) {
+                    _replace_unixtime($match => \$line, $config);
+                }
             }
             print "$line\n";
         }
     }
     else {
         for my $unixtime (@{$config->{unixtime}}) {
-            _from_unixtime($unixtime => \$unixtime, $config);
+            _replace_unixtime($unixtime => \$unixtime, $config);
             print "$unixtime\n";
         }
     }
@@ -59,7 +63,17 @@ sub _may_replace {
     }
 }
 
-sub _from_unixtime {
+sub _may_not_replace {
+    my ($line, $config) = @_;
+
+    return unless $config->{'no-re'};
+
+    for my $no_re (@{$config->{'no-re'}}) {
+        return 1 if $line =~ m!$no_re!;
+    }
+}
+
+sub _replace_unixtime {
     my ($maybe_unixtime, $line_ref, $config) = @_;
 
     if ($maybe_unixtime > 2**31-1) {
@@ -78,6 +92,22 @@ sub _from_unixtime {
     $$line_ref =~ s/$maybe_unixtime/$replaced_unixtime/;
 }
 
+sub from_unixtime {
+    my ($lines, @argv) = @_;
+
+    my $config = +{};
+    _get_options($config, \@argv);
+
+    my @replaced_lines;
+    for my $line ( split /\n/, $lines ) {
+        if ( my $match = _may_replace($line, $config) ) {
+            _replace_unixtime($match => \$line, $config);
+        }
+        push @replaced_lines, $line;
+    }
+    return join("\n", @replaced_lines);
+}
+
 sub _get_options {
     my ($config, $argv) = @_;
 
@@ -87,6 +117,7 @@ sub _get_options {
         'start-bracket=s' => \$config->{'start-bracket'},
         'end-bracket=s'   => \$config->{'end-bracket'},
         're=s@'           => \$config->{re},
+        'no-re=s@'        => \$config->{'no-re'},
         'h|help' => sub {
             _show_usage(1);
         },
@@ -142,7 +173,7 @@ App::FromUnixtime - to convert from unixtime to date suitably
 
 =head1 DESCRIPTION
 
-See the L<from_unixtime> command for more detail.
+C<App::FromUnixtime> provides the L<from_unixtime> command and the B<from_unixtime> function.
 
 
 =head1 METHOD
@@ -150,6 +181,21 @@ See the L<from_unixtime> command for more detail.
 =head2 run
 
 run to convert process
+
+
+=head1 EXPORT FUNCTION
+
+=head2 from_unixtime($line, @options)
+
+C<App::FromUnixtime> exports B<from_unixtime> function for converting the string that may be included unixtime.
+
+    use App::FromUnixtime;
+
+    print from_unixtime('created_at 1419702037'); # created_at 1419702037(Sun, 28 Dec 2014 02:40:37 +0900)
+
+    print from_unixtime('created_at 1419702037', '--format' => '%Y-%m-%d'); # created_at 1419702037(2014-12-28)
+
+See L<from_unixtime> command for more options.
 
 
 =head1 REPOSITORY

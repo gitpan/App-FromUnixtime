@@ -1,5 +1,11 @@
 Revision history for Perl extension App::FromUnixtime
 
+0.10    Sun Jan  4 20:09:09 JST 2015
+        - also export 'from_unixtime' function for one liner (thanks to tokuhirom)
+        - add '--no-re' option
+        - rename internal function: _from_unixtime -> _replace_unixtime
+        - fix pod
+
 0.09    Sat Jan  3 21:38:27 JST 2015
         - add tests
 

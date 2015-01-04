@@ -17,9 +17,10 @@ name: App-FromUnixtime
 provides:
   App::FromUnixtime:
     file: lib/App/FromUnixtime.pm
-    version: '0.09'
+    version: '0.10'
 requires:
   Config::CmdRC: '0'
+  Exporter: '0'
   Getopt::Long: '0'
   IO::Interactive::Tiny: '0'
   POSIX: '0'
@@ -31,4 +32,4 @@ resources:
   bugtracker: http://github.com/bayashi/App-FromUnixtime/issues
   license: http://dev.perl.org/licenses/
   repository: http://github.com/bayashi/App-FromUnixtime
-version: '0.09'
+version: '0.10'
